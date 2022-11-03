@@ -127,7 +127,7 @@ def pdhg_rotate_isotv_anisotv(data, ig, lb, ub, *args, num_iters=100, update_obj
     algo = PDHG(initial=ig.allocate(0.0),
                 f=F12x, g=G, operator=K12x, 
                 sigma=sigma, tau=tau,
-                update_objective_interval=100, 
+                update_objective_interval=update_objective_interval, 
                 max_iteration=num_iters)
     algo.run(verbose=verbose)
     
@@ -159,7 +159,7 @@ def pdhg_l1tvl1(data, ig, lb, ub, *args, num_iters=2000, update_objective_interv
     algo = PDHG(initial=ig.allocate(0.0),
         f=F, g=G, operator=K,
         sigma=sigma, tau=tau,
-        update_objective_interval=100, max_iteration=num_iters)
+        update_objective_interval=update_objective_interval, max_iteration=num_iters)
     algo.run(verbose=verbose)
     return algo.solution.copy()
 
