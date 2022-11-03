@@ -21,7 +21,7 @@ import glob
 import numpy as np
 # method imports
 import util
-from algo import pdhg_tv
+from algo import pdhg_rotate_isotv_anisotv
 
 def preprocess(data):
     '''Preprocess the data'''
@@ -65,7 +65,6 @@ def create_lb_ub(data, ig, ub_mask_type, lb_mask_type, ub_val, lb_val, basic_mas
 
     return lb, ub
 
-
 def main():
     parser = ArgumentParser(description= 'CIL Team Algorithm 1')
     parser.add_argument('in_folder', help='Input folder')
@@ -96,9 +95,13 @@ def main():
     lb_val = ub_val  # could be changed to 0.04 or other smaller values
 
     # Reconstruction
+    alpha = 0.1
+    alpha_dx = 0.1
+    if difficulty in [1,2,3,4,5,6,7]:
+        alpha = 0.1
+        alpha_dx = 0.1
+
     num_iters = 2000
-    # with this algo we do not change alpha with difficulty level
-    alpha = 0.01
     update_objective_interval = 100
     verbose = 1
     
@@ -137,10 +140,10 @@ def main():
         
         
         # algorithmic parameters
-        args = [omega, alpha]
+        args = [omega, alpha, alpha_dx]
         
         # Run reconstruction
-        data_recon = pdhg_tv(data_preprocessed, ig, lb, ub, *args, num_iters=num_iters, 
+        data_recon = pdhg_rotate_isotv_anisotv(data_preprocessed, ig, lb, ub, *args, num_iters=num_iters, 
                 update_objective_interval=update_objective_interval, verbose=verbose)
         
         data_segmented = segment(data_recon, segmentation_method)
