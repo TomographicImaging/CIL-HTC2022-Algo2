@@ -5,7 +5,7 @@ import glob
 import numpy as np
 # method imports
 import util
-from algo import pdhg_tv
+from algo import pdhg_rotate_isotv_anisotv
 
 def preprocess(data):
     '''Preprocess the data'''
@@ -153,10 +153,10 @@ def main():
         
         
         # algorithmic parameters
-        args = [omega, alpha]
+        args = [omega, alpha, alpha_dx]
         
         # Run reconstruction
-        data_recon = pdhg_tv(data_preprocessed, ig, lb, ub, *args, num_iters=num_iters, 
+        data_recon = pdhg_rotate_isotv_anisotv(data_preprocessed, ig, lb, ub, *args, num_iters=num_iters, 
                 update_objective_interval=update_objective_interval, verbose=verbose)
         
         data_segmented = segment(data_recon, segmentation_method)
