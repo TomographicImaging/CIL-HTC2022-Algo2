@@ -14,7 +14,7 @@
 #   limitations under the License.
 
 
-name: htc-22-cil-l2tv
+name: htc-22-cil-algo2
 channels:
   - conda-forge
   - intel
