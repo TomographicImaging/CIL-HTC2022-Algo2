@@ -50,13 +50,21 @@ conda env create --file environment.yml
 ```
 
 ## Usage instructions.
-Show few examples.
 
 ```
 conda activate htc-22-cil-algo2
 python main.py path/to/input/files path/to/output/files 3
 ```
 
+## Examples
+
+This is an example of reconstructing the `htc_2022_ta_sparse_example.mat` example dataset, which has a 60 degree angular range.
+
+Left, is the given segmented result of performing FBP on the full dataset, right is our result of running our `main.py` with the file mentioned above:
+
+FBP on Full Dataset        |  Result of CIL-Algo2 - Score: 0.96336
+:-------------------------:|:-------------------------:
+![](https://github.com/TomographicImaging/CIL-HTC2022-Algo1/blob/main/test_data/htc2022_ta_full_recon_fbp_seg.png)   |  ![](https://github.com/TomographicImaging/CIL-HTC2022-Algo2/blob/show_examples/results/htc2022_ta_sparse_example.png)
 
 ## Repository content
 - utils.py
