@@ -58,13 +58,23 @@ python main.py path/to/input/files path/to/output/files 3
 
 ## Examples
 
-This is an example of reconstructing the `htc_2022_ta_sparse_example.mat` example dataset, which has a 60 degree angular range.
+Examples of reconstructing the example datasets, where we have limited the angles to 90, 60 and 30 degree ranges. The 'ref' column is the given segmented result from the full dataset.
 
-Left, is the given segmented result of performing FBP on the full dataset, right is our result of running our `main.py` with the file mentioned above:
+|   	|  Ref	|  90 	| 60 	| 30 	|
+|----------	|-----	|---	|---	|---	|
+|   **ta**	| ![](https://github.com/TomographicImaging/CIL-HTC2022-Algo1/blob/main/test_data/htc2022_ta_full_recon_fbp_seg.png)	| ![](results/AR90/htc2022_ta_full.png)	|  ![](results/AR60/htc2022_ta_full.png) 	|   ![](results/AR30/htc2022_ta_full.png)	|   
+|   **tb**	|   ![](https://github.com/TomographicImaging/CIL-HTC2022-Algo1/blob/improve_table/data/segmented_references/htc2022_tb_full_recon_fbp_seg.png)	|  ![](results/AR90/htc2022_tb_full.png)	|  ![](results/AR60/htc2022_tb_full.png) 	|   ![](results/AR30/htc2022_tb_full.png)	|   
+|   **tc**	|   ![](https://github.com/TomographicImaging/CIL-HTC2022-Algo1/blob/improve_table/data/segmented_references/htc2022_tc_full_recon_fbp_seg.png)	| ![](results/AR90/htc2022_tc_full.png)	|  ![](results/AR60/htc2022_tc_full.png) 	|   ![](results/AR30/htc2022_tc_full.png)	|   
+|   **td**	|   ![](https://github.com/TomographicImaging/CIL-HTC2022-Algo1/blob/improve_table/data/segmented_references/htc2022_td_full_recon_fbp_seg.png)	| ![](results/AR90/htc2022_td_full.png)	|  ![](results/AR60/htc2022_td_full.png) 	|   ![](results/AR30/htc2022_td_full.png)	|   
 
-FBP on Full Dataset        |  Result of CIL-Algo2 - Score: 0.96336
-:-------------------------:|:-------------------------:
-![](https://github.com/TomographicImaging/CIL-HTC2022-Algo1/blob/main/test_data/htc2022_ta_full_recon_fbp_seg.png)   |  ![](https://github.com/TomographicImaging/CIL-HTC2022-Algo2/blob/main/results/htc2022_ta_sparse_example.png)
+Scores for each sample and angle:
+
+|   	|  90 	| 60 	| 30 	|
+|-----	|---	|---	|---	|
+|**ta**	|0.988	|0.963	|0.916|
+|**tb**|0.933	|0.892	|0.785|
+|**tc**	|0.956	|0.918|	0.830|
+|**td**	|0.967	|0.960|	0.940|
 
 ## Repository content
 - utils.py
@@ -76,6 +86,24 @@ FBP on Full Dataset        |  Result of CIL-Algo2 - Score: 0.96336
 - test_data
   - htc2022_ta_full_recon_fbp_seg.png
   - htc2022_ta_sparse_example.mat
+- results
+  - htc2022_ta_sparse_example.png
+  - AR30
+    - htc2022_ta_full.png 
+    - htc2022_tb_full.png
+    - htc2022_tc_full.png
+    - htc2022_td_full.png
+  - AR60
+    - htc2022_ta_full.png 
+    - htc2022_tb_full.png
+    - htc2022_tc_full.png
+    - htc2022_td_full.png
+  - AR90
+    - htc2022_ta_full.png 
+    - htc2022_tb_full.png
+    - htc2022_tc_full.png
+    - htc2022_td_full.png 
+
 
 ## License
 All files in the repository come with the [Apache-v2.0](https://www.apache.org/licenses/LICENSE-2.0) license unless differently specified.
