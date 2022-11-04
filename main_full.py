@@ -54,7 +54,7 @@ def main():
     '''
     Example of use:
 
-    python main_full.py <input folder> <output folder> <difficulty> -alpha=0.01 -ang_range=60 -ang_start=0 -ub_mask_type=2 -lb_mask_type=0 -ub_val=0.040859 -lb_val=0.040859 -num_iters=2000 -seg_method=2
+    python main_full.py <input folder> <output folder> <difficulty> -alpha=0.1 -alpha_dx=0.1 -ang_range=60 -ang_start=0 -ub_mask_type=2 -lb_mask_type=0 -ub_val=0.040859 -lb_val=0.040859 -num_iters=2000 -seg_method=2
 
     This example uses all of the same parameters as main.py [except ang_start and range aren't set there, but by the data]. This was used to test that we get the same result by
     running this script with the htc_2022_ta_full.mat file, as we do with running main.py with the htc_2022_ta_sparse_example.mat, by checking the scores are equal.
@@ -67,6 +67,7 @@ def main():
     parser.add_argument('difficulty', type=int)
     parser.add_argument('-omega', type=float, help="Omega. If not set, defaults to 90/ang_range")
     parser.add_argument('-alpha', type=float, required=True, help= "Alpha. This is required.")
+    parser.add_argument('-alpha_dx', type=float, required=True, help= "Alpha_dx. This is required.")
     parser.add_argument('-ang_start', type=int, required=True, help="Starting angle, degrees. This is required.")
     parser.add_argument('-ang_range', type=int, required=True, help="Angular range, degrees. This is required.")
     parser.add_argument('-ub_mask_type', type=int, required=True, choices=[1, 2],  help= "1 basic 0.97 circle. 2 fitted")
@@ -108,6 +109,7 @@ def main():
     num_iters = args.num_iters
     # with this algo we do not change alpha with difficulty level
     alpha = args.alpha
+    alpha_dx = args.alpha_dx
     update_objective_interval = 100
     verbose = 1
     
@@ -122,7 +124,7 @@ def main():
 
     #####################################################
 
-    print("Omega: ", omega, "Alpha: ", alpha, "Ang Start: ", ang_start, "Ang Range: ", ang_range)
+    print("Omega: ", omega, "Alpha: ", alpha, "Alpha_dx: ", alpha_dx, "Ang Start: ", ang_start, "Ang Range: ", ang_range)
     print("Num iterations: ", num_iters, "Segmentation Method: ", segmentation_method)
     print("Lower Bound Mask Type: ", lb_mask_type, "Lower Bound Value: ", lb_val)
     print("Upper Bound Mask Type: ", ub_mask_type, "Upper Bound Value: ", ub_val)
@@ -163,7 +165,7 @@ def main():
 
         util.write_data_to_png(data_segmented, input_file, output_folder)
 
-    print("Omega: ", omega, "Alpha: ", alpha, "Ang Start: ", ang_start, "Ang Range: ", ang_range)
+    print("Omega: ", omega, "Alpha: ", alpha, "Alpha_dx: ", alpha_dx, "Ang Start: ", ang_start, "Ang Range: ", ang_range)
     print("Num iterations: ", num_iters, "Segmentation Method: ", segmentation_method)
     print("Lower Bound Mask Type: ", lb_mask_type, "Lower Bound Value: ", lb_val)
     print("Upper Bound Mask Type: ", ub_mask_type, "Upper Bound Value: ", ub_val)
