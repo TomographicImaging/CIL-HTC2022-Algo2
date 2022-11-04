@@ -95,12 +95,9 @@ def main():
     lb_val = ub_val  # could be changed to 0.04 or other smaller values
 
     # Reconstruction
-    alpha = 0.1
-    alpha_dx = 0.1
-    if difficulty in [1,2,3,4,5,6,7]:
-        alpha = 0.1
-        alpha_dx = 0.1
-
+    alpha = 0.01
+    alpha_dx = 0.03
+    
     num_iters = 2000
     update_objective_interval = 100
     verbose = 1
