@@ -2,7 +2,7 @@
 
 ## Authors:
 - Gemma Fardell (STFC), United Kingdom
-- Jakob Jorgensen (DTU), Denmark
+- Jakob Sauer Jørgensen (DTU), Denmark
 - Laura Murgatroyd (STFC), United Kingdom
 - Evangelos Papoutsellis (STFC, Finden), United Kingdom
 - Edoardo Pasca (STFC), United Kingdom
@@ -38,7 +38,7 @@ The algorithm in `algo.py` is developed using [CIL](https://www.ccpi.ac.uk/cil),
 The main steps of the algorithms are:
 1. Pre-processing: renormalisation, single material beam hardening correction, zero padding
 2. generation of pixelwise lower and upper bound circular masks (mask is fitted to the provided data)
-3. Regularised iterative reconstruction algorithm using tools from CIL: Least Squares with both isotropic and anisotropic TV regularisation
+3. Regularised iterative reconstruction algorithm using tools from CIL: Least Squares with both isotropic and 1-dimensional anisotropic TV regularisation, where orientation of projections is pre-aligned with one coordinate axis to get 1-dimensional anisotropic to encourage edges in the difficult direction orthogonal to the central projection angle.
 4. Post-processing: segmentation of the reconstruction with multi-Otsu threshold
 
 ## Installation instructions
