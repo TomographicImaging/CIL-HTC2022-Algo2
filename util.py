@@ -461,6 +461,79 @@ def find_circle_parameters(data, ig):
     
     return fitted_circle
 
+def find_circle_parameters_step(data, ig):
+    '''Finds a circle that encompasses the data in the specified ImageGeometry
+    
+    1. make FDK reconstruction of data in the ig ImageGeometry
+    3. calculate the magnitude of the gradient of the reconstruction
+    4. Threshold with otsu the magnitude of the gradient of the recon
+    5. fit a circle to the foreground points obtained from the otsu filter of the gradient magnitude.
+    6. iterative procedure doing: remove from the data points a circle with radius smaller by 4 pixels from the one found at previous step. 
+       Repeat until the number of points do not change
+    7. returns the radius and location of centre
+
+    Parameters:
+    -----------
+
+    data: input data, sinogram
+    ig: reconstruction volume geometry
+    
+
+    Returns:
+    --------
+    ndarray containing radius, x coordinate and y coordinate (relative to the ImageGeometry) in pixel units.
+    '''
+    
+    recon = FDK(data, ig).run()
+    
+    mag = calculate_gradient_magnitude(recon)
+    # TODO: export the gradient magnitude
+    
+    # initial binary mask
+    thresh = threshold_otsu(mag.array)
+    binary_mask = mag.array > thresh
+    # TODO: export the binary mask
+
+    mask = ig.allocate(0.)
+    previous_num_datapoints = mask.size
+    num_iterations = 20
+    delta = 4 # pixels
+    value = 1
+    fitted_circles = []
+    masks = []
+    for i in range(num_iterations):
+        maskarr = mask > 0
+
+        set_mask_to_zero(binary_mask, maskarr, value, *binary_mask.shape)
+        
+        # find the coordinates of the points in the binary mask
+        num_datapoints = np.sum(binary_mask)
+        # print ("iteration {}, num_datapoints {}, sum(mask) {}".format(i, num_datapoints, np.sum(maskarr)))
+        if num_datapoints < previous_num_datapoints:
+            previous_num_datapoints = num_datapoints
+        else:
+            return fitted_circles, masks
+        out = np.zeros((2, num_datapoints), dtype=int)
+        # finds the coordinates of the foreground points
+        get_coordinates_in_mask(binary_mask, *binary_mask.shape, out)
+
+        # fit a circle to the points
+        fitted_circle = fit_circle(*out)
+        fitted_circles.append(fitted_circle)
+        masks.append(binary_mask.copy())
+        
+        # TODO: export the fitted_circle parameters
+        print ("iteration {} fitted circle {}".format(i, fitted_circles[i]))
+        # fill a mask for next iteration
+        mask.fill(0)
+        # create a circle with a radius 4 pixel smaller than the fit and fill mask with it
+        smaller_circle = fitted_circle.copy()
+        smaller_circle[0] -= delta
+        # TODO: export the smaller_circle parameters
+        fill_circular_mask(smaller_circle, mask.array, value, *mask.shape)
+    
+    print (len(fitted_circles))
+    return fitted_circles, masks
    
 def apply_crazy_threshold(data):
     data_segmented = data.copy()
