@@ -53,7 +53,9 @@ ig.voxel_num_x = im_size
 ig.voxel_num_y = im_size
 
 #%%
-
+# make the full FDK reconstruction
+recfull = FDK(datafull, ig).run()
+#%%
 out = util.find_circle_parameters_step(data, ig)
 print (out)
 #%%
@@ -70,7 +72,7 @@ def get_circle_mask(circle_parameters, ig):
     util.fill_circular_mask(circle_parameters, outercircle.as_array(), 1, *outercircle.shape)
     # fill the circle with 0 in a smaller circle to highlight the circumference
     smaller_circle = circle_parameters.copy()
-    smaller_circle[0] = smaller_circle[0] - 1
+    smaller_circle[0] = smaller_circle[0] - 2
     print (circle_parameters, smaller_circle)
     innercircle = ig.allocate(0)
     util.fill_circular_mask(smaller_circle, innercircle.as_array(), 1, *innercircle.shape)
@@ -88,9 +90,11 @@ show2D(circ, cmap = 'gray_r')
 #%%
 for i,el in enumerate(out[1]):
     a = np.asarray(el, dtype=np.float32)
-
+    # add disk with points removed 
+    # or difference in colors with points used and removed
     plt.imshow(circ[i].as_array(), cmap='seismic', vmin=-1, vmax=1)
     plt.imshow(a, cmap='seismic_r', vmin=-1, vmax=1, alpha=0.5)
+    plt.imshow(recfull.as_array(), cmap='gray_r', alpha=0.1)
     plt.show()
 
 #%%
