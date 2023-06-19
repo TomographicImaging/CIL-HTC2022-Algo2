@@ -72,7 +72,7 @@ def get_circle_mask(circle_parameters, ig):
     util.fill_circular_mask(circle_parameters, outercircle.as_array(), 1, *outercircle.shape)
     # fill the circle with 0 in a smaller circle to highlight the circumference
     smaller_circle = circle_parameters.copy()
-    smaller_circle[0] = smaller_circle[0] - 2
+    smaller_circle[0] = smaller_circle[0] - 1
     print (circle_parameters, smaller_circle)
     innercircle = ig.allocate(0)
     util.fill_circular_mask(smaller_circle, innercircle.as_array(), 1, *innercircle.shape)
@@ -88,14 +88,34 @@ for i,el in enumerate(out[0]):
 
 show2D(circ, cmap = 'gray_r') 
 #%%
+import matplotlib
+Nr = 1
+Nc = 4
+origin = 'lower'
+fig, axs = plt.subplots(Nr, Nc)
+n = 1
+plt.figure(figsize=tuple([n * el for el in (10,6)]),\
+    dpi=600)
 for i,el in enumerate(out[1]):
     a = np.asarray(el, dtype=np.float32)
     # add disk with points removed 
-    # or difference in colors with points used and removed
-    plt.imshow(circ[i].as_array(), cmap='seismic', vmin=-1, vmax=1)
-    plt.imshow(a, cmap='seismic_r', vmin=-1, vmax=1, alpha=0.5)
-    plt.imshow(recfull.as_array(), cmap='gray_r', alpha=0.1)
-    plt.show()
+    innercircle = ig.allocate(0)
+    innercircle_par = out[0][i].copy()
+    innercircle_par[0] -= 4
+    util.fill_circular_mask(innercircle_par, innercircle.as_array(), 
+                            1, *innercircle.shape)
+    
+    # make a single row of plot
+    axs[i].imshow(circ[i].as_array(), cmap='seismic', vmin=-1, vmax=1, origin=origin)
+    axs[i].imshow(a, cmap='seismic_r', vmin=-1, vmax=1, alpha=0.5, origin=origin)
+    axs[i].imshow(recfull.as_array(), cmap='gray_r', alpha=0.1, origin=origin)
+    axs[i].imshow(innercircle.as_array(), cmap='gray_r', alpha=0.05, origin=origin)
+    axs[i].title.set_text(f'iteration {i}')
+    if i > 0:
+        axs[i].yaxis.set_major_locator(matplotlib.ticker.NullLocator())
+# fig.suptitle('Circle fitting')
+# plt.tight_layout(pad=0)
+plt.show()
 
 #%%
 # preprocess the data
@@ -151,3 +171,78 @@ disk = create_circular_mask(2, ub_val, data=data, ig=ig)
 lb1, ub1 = util.create_lb_ub(data, ig, ub_mask_type, lb_mask_type, 
                                 ub_val, lb_val, basic_mask_radius, lb_inner_radius)
 show2D([ub, ub1, ub-ub1], cmap=['gray','gray', 'seismic'])
+
+#%%
+
+from PIL import Image
+def calculate_score(path_to_reference_image_png, img_data):
+
+    # img_data = Image.open(path_to_our_segmentation)
+    img_arr = np.array(img_data)
+
+    ref = util.loadImg(path_to_reference_image_png)
+
+    return util.calcScoreArray(img_arr, np.flipud(ref))  
+
+#%%
+mask_scores = []
+for el in ['ta', 'tb', 'tc', 'td']:
+
+    data_tmp = util.load_htc2022data(f'../HTC2022/data/htc2022_{el}_full.mat')
+
+    out = util.find_circle_parameters_step(data, ig)
+    # print (out)
+    # mask = get_circle_mask(out[0][-1], ig)
+    mask = ig.allocate(0)
+    util.fill_circular_mask(out[0][-1], mask.as_array(), 1, *mask.shape)
+        
+    show2D(mask)
+
+    segmentation = f"../HTC2022/data/segmented_references/htc2022_{el}_full_recon_fbp_seg.png"
+    ref = np.flipud(util.loadImg(segmentation))
+    show2D([ref, mask])
+    score_mask = util.calcScoreArray(mask.as_array(), ref)
+    # score_mask = calculate_score(segmentation, mask)
+    print (score_mask)
+    mask_scores.append(score_mask)
+# %%
+
+for x,y in zip (['ta', 'tb', 'tc', 'td'], mask_scores):
+    print (f'{x}: {y}')
+
+# %%
+#97% 
+# np.asarray([r,x0,y0])
+r97 = ig.voxel_num_x * 0.5 * 0.97
+x97 = ig.voxel_num_x * 0.5
+y97 = ig.voxel_num_y * 0.5
+
+mask_scores_97 = []
+for el in ['ta', 'tb', 'tc', 'td']:
+
+    
+    # print (out)
+    # mask = get_circle_mask(out[0][-1], ig)
+    mask = ig.allocate(0)
+    util.fill_circular_mask([r97,x97,y97], mask.as_array(), 1, *mask.shape)
+        
+    show2D(mask)
+
+    segmentation = f"../HTC2022/data/segmented_references/htc2022_{el}_full_recon_fbp_seg.png"
+    ref = np.flipud(util.loadImg(segmentation))
+    show2D([ref, mask])
+    score_mask = util.calcScoreArray(mask.as_array(), ref)
+    # score_mask = calculate_score(segmentation, mask)
+    print (score_mask)
+    mask_scores_97.append(score_mask)
+# %%
+
+for x,y in zip (['ta', 'tb', 'tc', 'td'], mask_scores_97):
+    print (f'{x}: {y}')
+# %%
+avg = 0
+for x,y in zip(mask_scores, mask_scores_97):
+    print (x-y)
+    avg += (x-y)
+print (avg/4)
+# %%
