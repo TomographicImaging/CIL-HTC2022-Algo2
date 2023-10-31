@@ -133,7 +133,7 @@ def pdhg_rotate_isotv_anisotv(data, ig, lb, ub, *args, num_iters=100, update_obj
     
     sol =  algo.solution.copy()
     sol.array = rotate(sol.as_array(), ang_middle)
-    return sol
+    return ( sol, algo.solution.copy() )
 
 
 
