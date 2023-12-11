@@ -87,15 +87,16 @@ for i,el in enumerate(out[0]):
 # both = circ[0] + circ[1]
 
 show2D(circ, cmap = 'gray_r') 
+
 #%%
 import matplotlib
 Nr = 1
 Nc = 4
 origin = 'lower'
 fig, axs = plt.subplots(Nr, Nc)
-n = 1
+n = 2
 plt.figure(figsize=tuple([n * el for el in (10,6)]),\
-    dpi=600)
+    dpi=300)
 for i,el in enumerate(out[1]):
     a = np.asarray(el, dtype=np.float32)
     # add disk with points removed 
@@ -113,10 +114,14 @@ for i,el in enumerate(out[1]):
     axs[i].title.set_text(f'iteration {i}')
     if i > 0:
         axs[i].yaxis.set_major_locator(matplotlib.ticker.NullLocator())
-# fig.suptitle('Circle fitting')
-# plt.tight_layout(pad=0)
-plt.show()
+#%%
+# plt.show()
+# fig2.set_facecolor('w')
+# fig2.savefig('prova.png', dpi='figure')
 
+#%%
+#%%
+print([n * el for el in (10,6)])
 #%%
 # preprocess the data
 data_renorm = util.correct_normalisation(data)
@@ -132,6 +137,7 @@ for i,el in enumerate(out):
 both = circ[0] + circ[1]
 
 show2D(circ + [both], title=['start', 'final', 'both'], cmap = 'gray_r') 
+# dfig.save('circle_fitting.png', dpi=600)
 #%%
 # Circle fitting
 circle_parameters = util.find_circle_parameters(data, ig)
